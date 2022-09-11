@@ -24,4 +24,3 @@ EventBridgeのターゲットとしてSNSトピックを指定する必要があ
 
 ![](https://storage.googleapis.com/zenn-user-upload/ff19cdc10166-20220910.png)
 
-あいうえお
