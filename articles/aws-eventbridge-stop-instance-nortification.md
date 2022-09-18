@@ -60,5 +60,37 @@ SNSサブスクリプションを確認すると、ステータスが「確認�
 
 ![](https://storage.googleapis.com/zenn-user-upload/5ec2a38c0382-20220911.png)
 
+指定のEC2インスタンスのステータスが停止となったことを受けて通知を行うように「イベントパターン」を作成していく。
+
+![](https://storage.googleapis.com/zenn-user-upload/9483bc4b0ecf-20220917.png)
+
+続いて、ターゲットにSNSトピックを選択し、トピックに先程作成したものをプルダウンから選択していく。
+AWSから標準出力されるものは、可読性が悪いので、イベントの出力内容に手を加えて行きたいと思う。
+追加の設定のターゲット入力を設定で「入力トランスフォーマー」を選択し、入力トランスフォーマーを設定していく。
+
+![](https://storage.googleapis.com/zenn-user-upload/fa0483e0d6ee-20220917.png)
+
+まず、入力パスにAWS標準出力されるJSONの内容から、JSONのキーバリューの形で書き出していく。
+
+![](https://storage.googleapis.com/zenn-user-upload/862d6d044ff4-20220917.png)
+
+続いて、テンプレートに実際出力したい文字列を入力していく。
+このときに入力パスで指定したキーを<key-name>形式で使用可能。
+
+![](https://storage.googleapis.com/zenn-user-upload/2026d9ef7bab-20220917.png)
+
+他のステータスについては特に変更を加えずにルールの作成を行う。
+ルールが作成されステータスが「Enabled」となっていれば、EC2インスタンスを停止させ、Eメール通知が行われるか確認していく。
+
+![](https://storage.googleapis.com/zenn-user-upload/9934a417f112-20220917.png)
+
+問題なくメール通知が行われ、メール本文に入力トランスフォーマーの内容が反映されていることを確認できました。
+
+![](https://storage.googleapis.com/zenn-user-upload/515762996768-20220917.png)
+
+# AWS CLI を使用して、同じ構成を作成していく
+
+## SNSトピックを作成
+
 
 
