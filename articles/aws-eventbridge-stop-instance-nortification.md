@@ -3,7 +3,7 @@ title: "AWS EventBridgeを使用し、EC2インスタンの停止を通知"
 emoji: "🐔"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: [ "aws", "EventBirdge", "AWS CLI"]
-published: false
+published: true
 ---
 
 
