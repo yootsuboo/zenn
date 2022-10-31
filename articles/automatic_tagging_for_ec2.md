@@ -3,7 +3,7 @@ title: "EventBridgeとLambdaを使用して、新規構築したEC2に自動タ�
 emoji: "🐔"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["aws", "EventBridge", "Lambda", "CloudTrail"]
-published: true
+published: false
 ---
 
 # AWSリソース管理のためにEC2インスタンスへの自動タグ付けをやってみました。
