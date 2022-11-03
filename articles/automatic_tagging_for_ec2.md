@@ -3,7 +3,7 @@ title: "EventBridgeとLambdaを使用して、新規構築したEC2に自動タ�
 emoji: "🐔"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["aws", "EventBridge", "Lambda", "CloudTrail"]
-published: false
+published: true
 ---
 
 # AWSリソース管理のためにEC2インスタンスへの自動タグ付けをやってみました。
@@ -24,7 +24,7 @@ IAMサービスからポリシーを選択し、ポリシーの作成を行い�
 ポリシーの作成でJSONタブに切り替えて、以下のJSONを入力します。
 EC2インスタンスへのタグ付け用と、LambdaではCloudWatchLogsにログを出力するので、ログ関連の許可を付与しています。
 
-```json:Automatic-Logging-Lambda-policy.json
+```json:Automatic-Tagging-Lambda-policy.json
 {
     "Version": "2012-10-17",
     "Statement": [
@@ -44,7 +44,7 @@ EC2インスタンスへのタグ付け用と、LambdaではCloudWatchLogsにロ
 
 ポリシーの確認画面で、名前を入力して`ポリシーの作成`を選択します。
 
-![](https://storage.googleapis.com/zenn-user-upload/14ee3f708dbe-20221030.png)
+![](https://storage.googleapis.com/zenn-user-upload/0a7ef01cfd85-20221103.png)
 
 ### 次に、IAMロールを作成していきます。
 
@@ -58,11 +58,11 @@ IAMサービスからロールを選択し`ロールを作成`を選択します
 
 許可の追加で、先程作成したポリシーを選択します。
 
-![](https://storage.googleapis.com/zenn-user-upload/aad14d411a9b-20221030.png)
+![](https://storage.googleapis.com/zenn-user-upload/f7f7500b6b40-20221103.png)
 
 ロールの詳細で名前を入力し`ロールを作成`を選択します。
 
-![](https://storage.googleapis.com/zenn-user-upload/b9c2ee9d2560-20221030.png)
+![](https://storage.googleapis.com/zenn-user-upload/0ccbfd9db690-20221103.png)
 
 ## Lambdaの作成
 
@@ -75,7 +75,7 @@ Lambdaサービスに移動し`関数の作成`を選択します。
 デフォルトの実行ルールは、さきほど作成したIAMロールを選択してください。
 詳細設定については、今回は変更していません。
 
-![](https://storage.googleapis.com/zenn-user-upload/83dca83758f9-20221030.png)
+![](https://storage.googleapis.com/zenn-user-upload/347fa77bbe4e-20221103.png)
 
 Lambda関数が作成されました。
 まだ、トリガーとなるものがありませんが、後ほど作成するEventBridgeルールがトリガーに追加されます。
@@ -126,7 +126,7 @@ EventBridgeサービスのルールから`ルールを作成`を選択します�
 ルールの詳細で、名前と説明を入力していきます。
 イベントバスはAWSサービスの場合`default`で大丈夫です。
 
-![](https://storage.googleapis.com/zenn-user-upload/ffb57a46acac-20221030.png)
+![](https://storage.googleapis.com/zenn-user-upload/482e78ff2156-20221103.png)
 
 次に、イベントパターンを以下のように入力します。
 CloudTrailに作成されるEC2に対するログの`RunInstances`と一致したときに、イベントルールが実行されます。
@@ -136,13 +136,13 @@ CloudTrailに作成されるEC2に対するログの`RunInstances`と一致し�
 ターゲットには、先程作成したLambda関数を入力します。
 バージョン/エイリアス設定と、追加設定は変更していません。
 
-![](https://storage.googleapis.com/zenn-user-upload/29f131670116-20221030.png)
+![](https://storage.googleapis.com/zenn-user-upload/be1d6f338a0a-20221103.png)
 
 確認と更新画面で、設定に問題がなければ`ルールを作成`を選択します。
 
 EventBridgeのターゲットとしてLambdaを指定したことで、Lambda側のトリガーとしてEventBridgeが表示されるようになりました。
 
-![](https://storage.googleapis.com/zenn-user-upload/7d832add815f-20221030.png)
+![](https://storage.googleapis.com/zenn-user-upload/3c82d769d055-20221103.png)
 
 以上で準備は完了です。
 早速EC2インスタンスを作成していきたいと思います。
@@ -152,11 +152,11 @@ EventBridgeのターゲットとしてLambdaを指定したことで、Lambda側
 EC2インスタンスを作成していきます。
 作成内容は割愛します。
 
-![](https://storage.googleapis.com/zenn-user-upload/b7ed3f610343-20221030.png)
+![](https://storage.googleapis.com/zenn-user-upload/9b2e618227f3-20221103.png)
 
 タグが自動で付与されているか確認していきます。
 
-![](https://storage.googleapis.com/zenn-user-upload/2736385b3012-20221030.png)
+![](https://storage.googleapis.com/zenn-user-upload/4d4509c3111e-20221103.png)
 
 んっ!?名前タグ以外に何も作成されていません。。。
 CloudTrailで`RunInstances`ログが作成されているか確認していきます。
@@ -181,12 +181,12 @@ CloudTrailで`RunInstances`ログが作成されているか確認していき�
 ログファイルの書き換えなどの不正をしていないか検証してくれますが、個人使用では必要ないかと思います。
 また、CloudWatchLogsに証跡ログを出力してモニタリングすることもできますが、今回は無効にしています。
 
-![](https://storage.googleapis.com/zenn-user-upload/906100c364f1-20221030.png)
+![](https://storage.googleapis.com/zenn-user-upload/3a02b3701132-20221103.png)
 
 あとの設定はそのままで、確認と作成画面で`証跡の作成`を選択します。
 証跡が取得され始めますので、再度EC2インスタンスを作成してみたいと思います。
 
-![](https://storage.googleapis.com/zenn-user-upload/6aa9f15a3990-20221030.png)
+![](https://storage.googleapis.com/zenn-user-upload/7c63d0d49331-20221103.png)
 
 今度は問題なくタグが自動付与されました。
 実は、証跡の作成が必要とわかるまで、数時間EventBridgeルールなどと格闘していました。。
